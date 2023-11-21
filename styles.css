@@ -1,0 +1,97 @@
+.active-link a {
+  color: rgb(102, 22, 114);
+}
+
+a {
+  color: rgb(144, 4, 109);
+  position: relative;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: inherit;
+  color: inherit;
+  line-height: inherit;
+  font-size: inherit;
+}
+
+body {
+  background-color: rgb(126, 121, 106);
+  color: rgb(34, 33, 31);
+  font-size: 20px;
+  padding: 1em;
+  font-family: monospace;
+}
+
+input {
+  background-color: #333;
+  color: #fff;
+  padding: 0.5em;
+}
+
+input:hover {
+  background-color: #666;
+}
+
+input:active {
+  background-color: #999;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+ol {
+  padding-bottom: 1rem;
+  font-family: monospace;
+}
+
+h1 {
+  font-weight: 100;
+  font-size: 3em;
+}
+
+h2 {
+  font-weight: 400;
+  font-size: 1.75em;
+}
+
+h3 {
+  font-size: 1.5em;
+}
+h4 {
+  font-size: 1.25em;
+}
+h5 {
+  font-size: 1.125em;
+}
+
+pre {
+  font-family: monospace;
+}
+
+.center {
+  text-align: center;
+}
+
+.button-link {
+  display: inline-block;
+  background-color: #333;
+  color: #fff;
+  padding: 1em;
+  border-radius: 0.5em;
+  text-decoration: none;
+}
+
+.button-link:hover {
+  background-color: #666;
+}
+
+.button-link:active {
+  background-color: #999;
+}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AlphaWord PDB Encoder/Decoder</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <h1>AlphaWord PDB Encoder/Decoder</h1>
+    <p>This window can convert PDB files to Markdown, or vice versa.</p>
+    <p>Drag either a .PDB or .MD file into this window to convert it.</p>
+    <p>
+      File conversion is not processed by a server; it is handled within your
+      browser window. Your text stays 100% in your browser and is never sent to
+      us.
+    </p>
+    <div>
+      <label>
+        <span>Drag your file here.</span>
+        <input type="file" id="file_input" accept=".md, .pdb" />
+      </label>
+    </div>
+    <script src="./index.js"></script>
+  </body>
+</html>
