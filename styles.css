@@ -95,3 +95,7 @@ pre {
 .button-link:active {
   background-color: #999;
 }
+
+#editor-holder {
+  height: 500px;
+}

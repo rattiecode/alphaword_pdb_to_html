@@ -21,6 +21,28 @@
         <input type="file" id="file_input" accept=".md, .pdb" />
       </label>
     </div>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/editor.md@1.5.0/css/editormd.min.css"
+    />
+    <div id="editor-holder">
+      <div id="editor">
+        <!-- Tips: Editor.md can auto append a `<textarea>` tag -->
+        <textarea style="display: none" id="editor_input">
+### Your text will appear here when you upload your PDB!</textarea
+        >
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/editor.md@1.5.0/editormd.min.js"></script>
+    <script src="https://unpkg.com/editor.md@1.5.0/languages/en.js"></script>
+    <script type="text/javascript">
+      var editor = editormd("editor", {
+        path: "https://unpkg.com/editor.md@1.5.0/lib/",
+      });
+    </script>
+    <script src="https://unpkg.com/kaitai-struct@0.10.0/KaitaiStream.js"></script>
+    <script src="./alphaword_pdb_parser.js"></script>
     <script src="./index.js"></script>
   </body>
 </html>
