@@ -33,8 +33,8 @@ seq:
     type: u2
   - id: font_labels
     size: font_label_length
-  - id: paragraph_indicator
-    type: switchydoo
+  - id: sequences
+    type: sequence_type
     repeat: eos
 
 types:
@@ -45,11 +45,11 @@ types:
       - id: file_name
         type: strz
         encoding: ISO-8859-1
-  switchydoo:
+  sequence_type:
     seq:
       - id: type_indicator
         type: u1
-      - id: doodlydoo
+      - id: inner_type
         type:
           switch-on: type_indicator
           cases:
@@ -65,9 +65,6 @@ types:
         enum: alignment
       - id: idk2
         size: 6
-      - id: formatted_text
-        type: text_style
-        repeat: eos
   text_style:
     seq:
       - id: length
