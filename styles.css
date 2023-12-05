@@ -98,4 +98,9 @@ pre {
 
 #editor-holder {
   height: 500px;
+  background-color: #fff;
+}
+
+.ql-toolbar {
+  background-color: rgb(164, 197, 236);
 }
