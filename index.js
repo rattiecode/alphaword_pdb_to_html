@@ -1,12 +1,16 @@
 const fileInput = document.getElementById("file_input");
 
+// This looks for a change in value: no file to yes file
 async function fileChangeHandler(fileChangeEvent) {
+  // Javascript's reference to the file that was dragged in
   const file = fileChangeEvent.target.files[0];
   console.log("What is file? ", file);
+  // Reading the contents of the file and storing them in a byte array
+  // We use await because this may take time to read from the file system.
   const arrayBuffer = await file.arrayBuffer();
   lastArrayBuffer = arrayBuffer;
   console.log("What is arrayBuffer? ", arrayBuffer);
-
+  // Pass into Kaitai, which parses for us
   var parsedPDB = new AlphawordPdb(new KaitaiStream(arrayBuffer));
   console.log("What is parsedPDB?", parsedPDB);
 
@@ -15,16 +19,17 @@ async function fileChangeHandler(fileChangeEvent) {
   function processTextStyle(value) {
     let text = value.text;
     if (value.styleFlags.isItalic) {
-      text = `_${text}_`;
+      text = `<em>${text}</em>`;
     }
     if (value.styleFlags.isBold) {
-      text = `**${text}**`;
+      text = `<strong>${text}</strong>`;
     }
     if (value.styleFlags.isUnderlined) {
       text = `<u>${text}</u>`;
     }
     currentParagraph.push(text);
   }
+
   function processParagraph(value) {
     currentParagraph = [];
     paragraphs.push(currentParagraph);
@@ -44,10 +49,13 @@ async function fileChangeHandler(fileChangeEvent) {
 
   //console.log("What is paragraphs after parsing?", paragraphs);
   const paragraphsAsStrings = paragraphs.map(function (paragraph) {
-    return paragraph.join("");
+    return `<p>${paragraph.join("")}</p>`;
   });
-  const output = paragraphsAsStrings.join("\n\n");
-  editor.setValue(output);
+  const output = paragraphsAsStrings.join("\n");
+  console.log("What is output?", output);
+  console.log("What is quill?", quill);
+  quill.deleteText(0, quill.getLength());
+  quill.pasteHTML(0, output);
 }
 
 fileInput.addEventListener("change", fileChangeHandler);

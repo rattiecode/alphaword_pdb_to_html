@@ -9,13 +9,13 @@
   <body>
     <h1>AlphaWord PDB Encoder/Decoder</h1>
     <p>
-      This window can convert PDB files to Markdown. Right now, only
+      This window can convert PDB files to HTML. Right now, only
       <b>bold</b> and <i>italic</i> formatting is retained. This project is a
       work-in-progress! In the future, we plan to add functionality to convert
-      Markdown back to PDB.
+      HTML back to PDB.
     </p>
     <p>
-      Upload a .PDB file, and it will be converted to Markdown and appear in the
+      Upload a .PDB file, and it will be converted to HTML and appear in the
       text boxes below.
     </p>
     <p>
@@ -25,28 +25,33 @@
     </p>
     <div>
       <label>
-        <span>Upload your file here:</span>
-        <input type="file" id="file_input" accept=".md, .pdb" />
+        <span>Upload your PDB file here:</span>
+        <input type="file" id="file_input" accept=".pdb" />
       </label>
     </div>
     <link
       rel="stylesheet"
-      href="https://unpkg.com/editor.md@1.5.0/css/editormd.min.css"
+      href="https://unpkg.com/quill@1.3.7/dist/quill.snow.css"
     />
-    <div id="editor-holder">
-      <div id="editor">
-        <!-- Tips: Editor.md can auto append a `<textarea>` tag -->
-        <textarea style="display: none" id="editor_input">
-### Your text will appear here when you upload your PDB!</textarea
-        >
-      </div>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://unpkg.com/editor.md@1.5.0/editormd.min.js"></script>
-    <script src="https://unpkg.com/editor.md@1.5.0/languages/en.js"></script>
-    <script type="text/javascript">
-      var editor = editormd("editor", {
-        path: "https://unpkg.com/editor.md@1.5.0/lib/",
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/quill@1.3.7/dist/quill.core.css"
+    />
+    <div id="editor-holder"></div>
+    <script src="https://unpkg.com/quill@1.3.7/dist/quill.js"></script>
+    <script src="https://unpkg.com/quill-html-edit-button@2.2.7/dist/quill.htmlEditButton.min.js"></script>
+    <script>
+      Quill.register("modules/htmlEditButton", htmlEditButton);
+      const quill = new Quill("#editor-holder", {
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, false] }],
+            ["bold", "italic", "underline"],
+            ["image", "code-block"],
+          ],
+          htmlEditButton: {},
+        },
+        theme: "snow",
       });
     </script>
     <script src="https://unpkg.com/kaitai-struct@0.10.0/KaitaiStream.js"></script>
