@@ -29,6 +29,18 @@
         <input type="file" id="file_input" accept=".pdb" />
       </label>
     </div>
+    <div>
+      <label>
+        <span
+          >Ready to create a PDB file from the HTML below?Enter the name you'd
+          like to give your file:</span
+        >
+        <input type="text" id="file_name" />
+      </label>
+    </div>
+    <div>
+      <button id="encode_button">Encode PDB from the HTML</button>
+    </div>
     <link
       rel="stylesheet"
       href="https://unpkg.com/quill@1.3.7/dist/quill.snow.css"
@@ -55,6 +67,7 @@
       });
     </script>
     <script src="https://unpkg.com/kaitai-struct@0.10.0/KaitaiStream.js"></script>
+    <script src="./single-byte-browser.js"></script>
     <script src="./alphaword_pdb_parser.js"></script>
     <script src="./index.js"></script>
   </body>

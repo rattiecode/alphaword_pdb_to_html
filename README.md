@@ -10,6 +10,23 @@ My future goal is to convert text from a word processor _back_ to PDB format so 
 
 ## Notes on the PDB Format
 
+| Offset | Name                | Type                                    | Size     |
+| ------ | ------------------- | --------------------------------------- | -------- |
+| 0x00   | name                | char (Modified ISO-8859-1, aka Latin-1) | 32 Bytes |
+| 0x20   | file attributes     | integer                                 | 2 Bytes  |
+| 0x22   | version             | integer                                 | 2 Bytes  |
+| 0x24   | creation time       | 32bit integer - PDB Datetime            | 4 Bytes  |
+| 0x28   | modification time   | 32bit integer - PDB Datetime            | 4 Bytes  |
+| 0x2c   | backup time         | 32bit integer - PDB Datetime            | 4 Bytes  |
+| 0x30   | modification number | integer                                 | 4 Bytes  |
+| 0x34   | app_info            | integer                                 | 4 Bytes  |
+| 0x38   | sort_info           | integer                                 | 4 Bytes  |
+| 0x3c   | type                | integer                                 | 4 Bytes  |
+| 0x40   | creator             | integer                                 | 4 Bytes  |
+| 0x44   | unique_id_seed      | integer                                 | 4 Bytes  |
+| 0x48   | next_record_list    | integer                                 | 4 Bytes  |
+| 0x4c   | num_records         | integer                                 | 2 Bytes  |
+
 At `0x84` there seems to be a byte that tells us how many bytes to seek forward to get to the end of the list of fonts in the document.
 
 The first byte after the `0x84` + value at `0x84` is probably a value `0x05`.
@@ -64,6 +81,13 @@ Seems to be Uint16 value where this number is double the font size that is speci
 - `0x05` - Bold and underlined
 - `0x06` - Italic and underlined
 - `0x07` - Bold and italic and underlined
+
+### Dependencies
+
+- `buffer` to create a buffer
+- `single-byte` to encode UTF-8 to Latin-1
+- `Quill` HTML editor
+- `Kaitai Struct` used to encode PDB to HTML
 
 ### Goals
 

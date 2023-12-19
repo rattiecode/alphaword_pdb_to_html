@@ -59,3 +59,21 @@ async function fileChangeHandler(fileChangeEvent) {
 }
 
 fileInput.addEventListener("change", fileChangeHandler);
+
+const fileNameInput = document.getElementById("file_name");
+const encodeButton = document.getElementById("encode_button");
+
+function convertHtmlToPdb() {
+  let fileSoFar = new ArrayBuffer(32);
+  let nameBuffer = new Uint8Array(fileSoFar, 0, 31);
+  const latinFileName = SingleByte.encode("iso-8859-2", fileNameInput.value);
+  console.log("What is latinFileName?", latinFileName);
+  nameBuffer.set(latinFileName.slice(0, 31));
+  console.log("What is nameBuffer?", nameBuffer);
+  console.log("What is fileSoFar?", fileSoFar);
+  alert(
+    "This feature is a work in progress! Check back in a few weeks. 2023-12-18"
+  );
+}
+
+encodeButton.addEventListener("click", convertHtmlToPdb);

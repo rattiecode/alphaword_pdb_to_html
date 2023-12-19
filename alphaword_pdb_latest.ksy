@@ -7,8 +7,22 @@ seq:
     type: strz
     encoding: ISO-8859-1
     size: 32
-  - id: idk
-    size: 28
+  - id: attributes
+    type: u2
+  - id: version
+    type: u2
+  - id: creation_time
+    type: u4
+  - id: modification_time
+    type: u4
+  - id: backup_time
+    type: u4
+  - id: modification_number
+    type: u4
+  - id: app_info
+    type: u4
+  - id: sort_info
+    type: u4
   - id: doc_type
     type: str
     encoding: ISO-8859-1
@@ -17,8 +31,18 @@ seq:
     type: str
     encoding: ISO-8859-1
     size: 4
+  - id: unique_id_seed
+    type: u4
+  - id: next_record_list
+    type: u4
+  - id: num_records
+    type: u2
+  - id: record_headers
+    type: record_header
+    repeat: expr
+    repeat-expr: num_records
   - id: idk2
-    size: 46
+    size: 20
   - id: paragraph_count_1
     type: u4
   - id: paragraph_count_2
@@ -38,6 +62,19 @@ seq:
     repeat: eos
 
 types:
+  record_header:
+    seq:
+      - id: offset
+        type: u4
+      - id: attributes
+        type: u1
+      - id: unique_id1
+        type: u1
+      - id: unique_id2
+        type: u1
+      - id: unique_id3
+        type: u1
+
   font_label:
     seq:
       - id: idk
