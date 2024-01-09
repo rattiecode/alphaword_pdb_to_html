@@ -17,29 +17,33 @@ async function fileChangeHandler(fileChangeEvent) {
 
   let currentParagraph = null;
   let paragraphs = [];
-  function processTextStyle(value) {
-    let text = value.text;
-    if (value.styleFlags.isItalic) {
+  // This uses the Kaitai structure file (styleFlags, isItalic, etc) to denote what HTML to apply
+  function processTextStyle(textInnerType) {
+    let text = textInnerType.text;
+    if (textInnerType.styleFlags.isItalic) {
       text = `<em>${text}</em>`;
     }
-    if (value.styleFlags.isBold) {
+    if (textInnerType.styleFlags.isBold) {
       text = `<strong>${text}</strong>`;
     }
-    if (value.styleFlags.isUnderlined) {
+    if (textInnerType.styleFlags.isUnderlined) {
       text = `<u>${text}</u>`;
     }
     currentParagraph.children.push(text);
   }
 
-  function processParagraph(value) {
+  //Receives the paragraph's innerType alignment attribute (which should be a 0, 1, or 2) from the Kaitai struct and then uses it to set the object property to the corresponding item of the alignmentTypes array (left, center, right)
+  // Creates an array of children to contain all the formatted text that exists within the paragraph.
+  function processParagraph(paragraphInnerType) {
     currentParagraph = {
-      alignment: value.alignment,
+      alignment: alignmentTypes[paragraphInnerType.alignment],
       children: [],
     };
     paragraphs.push(currentParagraph);
   }
 
   parsedPDB.sequences.forEach(function (item) {
+    // This looks at the typeIndicator (the Kaitai struct dependency) to determine if the following formatting is for a paragraph, or a piece of text. It then sends the formatting to the next phase of processing.
     if (item.typeIndicator === 5) {
       processParagraph(item.innerType);
     } else if (item.typeIndicator === 1) {
@@ -52,9 +56,14 @@ async function fileChangeHandler(fileChangeEvent) {
   });
 
   //console.log("What is paragraphs after parsing?", paragraphs);
+  // "paragraphs" is an array of objects with the properties:
+  //   alignment: string, has the text "left", "right", or "center"
+  //   children: string[], array of strings
+  // This creates a new array of paragraphsAsStrings that have been formatted and joined together.
   const paragraphsAsStrings = paragraphs.map(function (paragraph) {
-    const alignment = alignmentTypes[paragraph.alignment];
-    return `<p style="text-align: ${alignment};">${paragraph.children.join("")}</p>`;
+    return `<p style="text-align: ${
+      paragraph.alignment
+    };">${paragraph.children.join("")}</p>`;
   });
   const output = paragraphsAsStrings.join("\n");
   console.log("What is output?", output);

@@ -96,4 +96,6 @@ Seems to be Uint16 value where this number is double the font size that is speci
   - ` "` and `\n"` to ` “`
   - `" ` to `” `
 - Generate PDB file from HTML
+  - Use a template PDB to give the generated PDB the header information it needs to be read as a PDB
 - Create a PDB download button
+-
