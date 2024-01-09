@@ -1,4 +1,5 @@
 const fileInput = document.getElementById("file_input");
+const alignmentTypes = ["left", "center", "right"];
 
 // This looks for a change in value: no file to yes file
 async function fileChangeHandler(fileChangeEvent) {
@@ -14,7 +15,7 @@ async function fileChangeHandler(fileChangeEvent) {
   var parsedPDB = new AlphawordPdb(new KaitaiStream(arrayBuffer));
   console.log("What is parsedPDB?", parsedPDB);
 
-  let currentParagraph = [];
+  let currentParagraph = null;
   let paragraphs = [];
   function processTextStyle(value) {
     let text = value.text;
@@ -27,11 +28,14 @@ async function fileChangeHandler(fileChangeEvent) {
     if (value.styleFlags.isUnderlined) {
       text = `<u>${text}</u>`;
     }
-    currentParagraph.push(text);
+    currentParagraph.children.push(text);
   }
 
   function processParagraph(value) {
-    currentParagraph = [];
+    currentParagraph = {
+      alignment: value.alignment,
+      children: [],
+    };
     paragraphs.push(currentParagraph);
   }
 
@@ -49,7 +53,8 @@ async function fileChangeHandler(fileChangeEvent) {
 
   //console.log("What is paragraphs after parsing?", paragraphs);
   const paragraphsAsStrings = paragraphs.map(function (paragraph) {
-    return `<p>${paragraph.join("")}</p>`;
+    const alignment = alignmentTypes[paragraph.alignment];
+    return `<p style="text-align: ${alignment};">${paragraph.children.join("")}</p>`;
   });
   const output = paragraphsAsStrings.join("\n");
   console.log("What is output?", output);
