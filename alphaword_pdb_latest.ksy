@@ -41,22 +41,32 @@ seq:
     type: record_header
     repeat: expr
     repeat-expr: num_records
-  - id: idk2
-    size: 20
-  - id: paragraph_count_1
+  - id: padding
+    type: u2
+  - id: section_id_type
+    type: u2
+  - id: padding_2
+    type: u2
+  - id: text_doc_record_length
     type: u4
-  - id: paragraph_count_2
+  - id: idk_static_299067162755072
+    type: u8
+  - id: section_id_type_2
+    type: u2
+  - id: paragraph_count
     type: u4
-  - id: character_count_idk
+  - id: text_node_count
     type: u4
-  - id: seriously_idk
+  - id: text_node_character_count
     type: u4
-  - id: idk3
+  - id: font_label_length_1
+    type: u4
+  - id: idk3_probably_128
     type: u1
-  - id: font_label_length
+  - id: font_label_length_2
     type: u2
   - id: font_labels
-    size: font_label_length
+    size: font_label_length_2
   - id: sequences
     type: sequence_type
     repeat: eos

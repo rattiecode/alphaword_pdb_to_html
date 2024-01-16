@@ -32,7 +32,14 @@
         KaitaiStream.bytesTerminate(this._io.readBytes(32), 0, false),
         "ISO-8859-1"
       );
-      this.idk = this._io.readBytes(28);
+      this.attributes = this._io.readU2be();
+      this.version = this._io.readU2be();
+      this.creationTime = this._io.readU4be();
+      this.modificationTime = this._io.readU4be();
+      this.backupTime = this._io.readU4be();
+      this.modificationNumber = this._io.readU4be();
+      this.appInfo = this._io.readU4be();
+      this.sortInfo = this._io.readU4be();
       this.docType = KaitaiStream.bytesToStr(
         this._io.readBytes(4),
         "ISO-8859-1"
@@ -41,14 +48,26 @@
         this._io.readBytes(4),
         "ISO-8859-1"
       );
-      this.idk2 = this._io.readBytes(46);
-      this.paragraphCount1 = this._io.readU4be();
-      this.paragraphCount2 = this._io.readU4be();
-      this.characterCountIdk = this._io.readU4be();
-      this.seriouslyIdk = this._io.readU4be();
-      this.idk3 = this._io.readU1();
-      this.fontLabelLength = this._io.readU2be();
-      this.fontLabels = this._io.readBytes(this.fontLabelLength);
+      this.uniqueIdSeed = this._io.readU4be();
+      this.nextRecordList = this._io.readU4be();
+      this.numRecords = this._io.readU2be();
+      this.recordHeaders = [];
+      for (var i = 0; i < this.numRecords; i++) {
+        this.recordHeaders.push(new RecordHeader(this._io, this, this._root));
+      }
+      this.padding = this._io.readU2be();
+      this.sectionIdType = this._io.readU2be();
+      this.padding2 = this._io.readU2be();
+      this.textDocRecordLength = this._io.readU4be();
+      this.idkStatic299067162755072 = this._io.readU8be();
+      this.sectionIdType2 = this._io.readU2be();
+      this.paragraphCount = this._io.readU4be();
+      this.textNodeCount = this._io.readU4be();
+      this.textNodeCharacterCount = this._io.readU4be();
+      this.fontLabelLength1 = this._io.readU4be();
+      this.idk3Probably128 = this._io.readU1();
+      this.fontLabelLength2 = this._io.readU2be();
+      this.fontLabels = this._io.readBytes(this.fontLabelLength2);
       this.sequences = [];
       var i = 0;
       while (!this._io.isEof()) {
@@ -161,6 +180,25 @@
       };
 
       return ParagraphFormatting;
+    })());
+
+    var RecordHeader = (AlphawordPdb.RecordHeader = (function () {
+      function RecordHeader(_io, _parent, _root) {
+        this._io = _io;
+        this._parent = _parent;
+        this._root = _root || this;
+
+        this._read();
+      }
+      RecordHeader.prototype._read = function () {
+        this.offset = this._io.readU4be();
+        this.attributes = this._io.readU1();
+        this.uniqueId1 = this._io.readU1();
+        this.uniqueId2 = this._io.readU1();
+        this.uniqueId3 = this._io.readU1();
+      };
+
+      return RecordHeader;
     })());
 
     var FontLabel = (AlphawordPdb.FontLabel = (function () {
