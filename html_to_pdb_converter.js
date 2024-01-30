@@ -1,5 +1,9 @@
 const tests = [
   {
+    input: "<p></p>",
+    output: [],
+  },
+  {
     input: "<p>0 - plain</p>",
     output: [{ text: "0 - plain" }],
   },
@@ -161,8 +165,37 @@ const tests = [
   },
 ];
 
-const getDanaStyledTextNodesFromDomNode = function (topLevelNode) {
-  return [];
+const getDanaStyledTextNodesFromDomNode = function (
+  topLevelNode,
+  parentStatuses
+) {
+  let result = [];
+  const statuses = Object.assign({}, parentStatuses);
+  const nodes = topLevelNode.childNodes;
+
+  if (topLevelNode.nodeName === "H1") {
+    statuses.isBold = true;
+    statuses.isUnderlined = true;
+  } else if (topLevelNode.nodeName === "STRONG") {
+    statuses.isBold = true;
+  } else if (topLevelNode.nodeName === "EM") {
+    statuses.isItalic = true;
+  } else if (topLevelNode.nodeName === "U") {
+    statuses.isUnderlined = true;
+  }
+
+  for (let index = 0; index < nodes.length; index++) {
+    // Nodes can be elements or text nodes or comment nodes, etc.
+    const node = nodes[index];
+    // Begin testing what sort of node it is
+    if (node.nodeName === "#text") {
+      result.push(Object.assign({ text: node.textContent }, statuses));
+    } else {
+      const childNodeResult = getDanaStyledTextNodesFromDomNode(node, statuses);
+      result = result.concat(childNodeResult);
+    }
+  }
+  return result;
 };
 
 tests.forEach(function (test) {
