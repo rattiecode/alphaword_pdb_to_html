@@ -281,7 +281,7 @@ const tests = [
   {
     input: '<p class="ql-align-justify">This text is justified by Quill.</p>',
     output: {
-      align: "justified",
+      align: "justify",
       children: [
         {
           text: "This text is justified by Quill.",
@@ -293,7 +293,7 @@ const tests = [
     input:
       '<p style="text-align: justify;">This text is justified by style.</p>',
     output: {
-      align: "justified",
+      align: "justify",
       children: [
         {
           text: "This text is justified by style.",
@@ -301,7 +301,53 @@ const tests = [
       ],
     },
   },
-
+  {
+    input:
+      "<p><span>This text is a span.</span> The span is closed. <span>Then open again.</span></p>",
+    output: {
+      children: [
+        {
+          text: "This text is a span. The span is closed. Then open again.",
+        },
+      ],
+    },
+  },
+  {
+    input:
+      "<p><em>This text is italic.</em><em>This text is also italic.</em></p>",
+    output: {
+      children: [
+        {
+          text: "This text is italic.This text is also italic.",
+          isItalic: true,
+        },
+      ],
+    },
+  },
+  {
+    input:
+      "<p><em>This text is italic.</em><em>This text is also italic.</em></p>",
+    output: {
+      children: [
+        {
+          text: "This text is italic.This text is also italic.",
+          isItalic: true,
+        },
+      ],
+    },
+  },
+  {
+    input:
+      "<p><em>This text is italic.</em><em>This text is also italic.</em><em>And one more!</em></p>",
+    output: {
+      children: [
+        {
+          text: "This text is italic.This text is also italic.And one more!",
+          isItalic: true,
+        },
+      ],
+    },
+  },
   // TODO: Take spans with no style properties and merge with text nodes with no properties
 ];
 
@@ -374,7 +420,7 @@ tests.forEach(function (test) {
   const expectedOutputAsJson = JSON.stringify(test.output);
   // Use stringify to compare the equivalency of the objects by comparing their internal properties in the form of string
   if (expectedOutputAsJson !== outputAsJson) {
-    const errorMessage = `Test failed: ${test.input}\n\tExpected: ${expectedOutputAsJson}\n\tActual: ${outputAsJson}`;
+    const errorMessage = `Test failed: ${test.input}\n\tExpected: ${expectedOutputAsJson}\n\tActual:   ${outputAsJson}`;
     console.error(errorMessage);
   }
 });
