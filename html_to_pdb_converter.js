@@ -185,14 +185,14 @@ const tests = [
     output: {
       children: [
         {
-          text: "The following is an empty em: ",
-        },
-        {
-          text: ". This is a span. ",
+          text: "The following is an empty em: . This is a span. ",
         },
         {
           text: "This is bold (b).",
           isBold: true,
+        },
+        {
+          text: " ",
         },
         {
           text: "This is italic (i).",
@@ -351,6 +351,35 @@ const tests = [
   // TODO: Take spans with no style properties and merge with text nodes with no properties
 ];
 
+const overwriteTextProperty = { text: undefined };
+
+const cleanUpContiguousTextNodes = function (nodes) {
+  if (nodes.length === 0) {
+    return nodes;
+  }
+  // Grabs first thing so that we will have it to work with
+  var result = [nodes.shift()];
+  // Eventually, this will stop. If not, would need a break
+  while (nodes.length > 0) {
+    const current = nodes.shift();
+    const previous = result[result.length - 1];
+    // Getts names of properties (isBold, isItalic, etc) and sorts them to ensure they're always in the same order
+    const currentKeys = Object.keys(current).sort();
+    const previousKeys = Object.keys(previous).sort();
+    //Returns boolean
+    const comparison = previousKeys.join() === currentKeys.join();
+    // If they have the same property, put them together
+    if (comparison) {
+      previous.text += current.text;
+    }
+    // Otherwise, push current section onto the end of the array
+    else {
+      result.push(current);
+    }
+  }
+  return result;
+};
+
 const getDanaStyledTextNodesFromDomNode = function (
   topLevelNode,
   parentStatuses
@@ -365,9 +394,15 @@ const getDanaStyledTextNodesFromDomNode = function (
   if (topLevelNode.nodeName === "H1") {
     statuses.isBold = true;
     statuses.isUnderlined = true;
+  } else if (topLevelNode.nodeName === "H2") {
+    statuses.isUnderlined = true;
   } else if (topLevelNode.nodeName === "STRONG") {
     statuses.isBold = true;
+  } else if (topLevelNode.nodeName === "B") {
+    statuses.isBold = true;
   } else if (topLevelNode.nodeName === "EM") {
+    statuses.isItalic = true;
+  } else if (topLevelNode.nodeName === "I") {
     statuses.isItalic = true;
   } else if (topLevelNode.nodeName === "U") {
     statuses.isUnderlined = true;
@@ -399,9 +434,10 @@ const getAlignmentFromNode = function (domNode) {
 };
 
 const getWholeEnchilada = function (topLevelNode) {
+  const styledNodes = getDanaStyledTextNodesFromDomNode(topLevelNode);
   return {
     align: getAlignmentFromNode(topLevelNode),
-    children: getDanaStyledTextNodesFromDomNode(topLevelNode),
+    children: cleanUpContiguousTextNodes(styledNodes),
   };
 };
 
