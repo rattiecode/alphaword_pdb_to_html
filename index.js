@@ -77,16 +77,35 @@ fileInput.addEventListener("change", fileChangeHandler);
 const fileNameInput = document.getElementById("file_name");
 const encodeButton = document.getElementById("encode_button");
 
+const mergeArrayBuffers = function (a, b) {
+  const result = new Uint8Array(a.byteLength + b.byteLength);
+  result.set(new Uint8Array(a));
+  result.set(new Uint8Array(b), a.byteLength);
+  return result;
+};
+
 function convertHtmlToPdb() {
   let fileSoFar = new ArrayBuffer(32);
   let nameBuffer = new Uint8Array(fileSoFar, 0, 31);
   const latinFileName = SingleByte.encode("iso-8859-2", fileNameInput.value);
   console.log("What is latinFileName?", latinFileName);
   nameBuffer.set(latinFileName.slice(0, 31));
+  const donorDataForDana = [
+    // Offset 0x00000020 to 0x0000004B
+    0x00, 0x08, 0x00, 0x00, 0xe1, 0xc2, 0x14, 0x24, 0xe1, 0xc2, 0x14, 0x27,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x42, 0x44, 0x4f, 0x43, 0x57, 0x72, 0x64, 0x53,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  ];
+  fileSoFar = mergeArrayBuffers(
+    fileSoFar,
+    Uint8Array.from(donorDataForDana).buffer
+  );
   console.log("What is nameBuffer?", nameBuffer);
   console.log("What is fileSoFar?", fileSoFar);
+
   alert(
-    "This feature is a work in progress! Check back in a few weeks. 2023-12-18"
+    "This feature is a work in progress! Check back in a few weeks. 2024-03-11"
   );
 }
 
