@@ -433,7 +433,7 @@ const getAlignmentFromNode = function (domNode) {
   return quillClassName || domNode.style.textAlign || undefined;
 };
 
-const getWholeEnchilada = function (topLevelNode) {
+const getDanaPargraphFromDomNode = function (topLevelNode) {
   const styledNodes = getDanaStyledTextNodesFromDomNode(topLevelNode);
   return {
     align: getAlignmentFromNode(topLevelNode),
@@ -450,7 +450,7 @@ tests.forEach(function (test) {
   // Gets a handle on the first child node in hydrated contents
   const topLevelNode = testDomNode.children[0];
   // Enter it into the test function
-  const output = getWholeEnchilada(topLevelNode);
+  const output = getDanaPargraphFromDomNode(topLevelNode);
 
   const outputAsJson = JSON.stringify(output);
   const expectedOutputAsJson = JSON.stringify(test.output);

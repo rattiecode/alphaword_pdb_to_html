@@ -50,6 +50,7 @@ Somewhere in here, it stores the justification for the line.
 `0x00`: Left alignment
 `0x01`: Centered
 `0x02`: Right alignment
+`0x03`: Justified
 
 ### `0x01` seems to be a text formatting indicator.
 
