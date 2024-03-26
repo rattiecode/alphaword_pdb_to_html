@@ -104,3 +104,12 @@ pre {
 .ql-toolbar {
   background-color: rgb(164, 197, 236);
 }
+
+#download_link_holder a {
+  display: block;
+  text-align: center;
+  padding: 16px;
+  background-color: #fff;
+  margin: 16px;
+  border-radius: 16px;
+}
