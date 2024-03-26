@@ -1,4 +1,5 @@
 const fileInput = document.getElementById("file_input");
+const downloadLinkHolder = document.getElementById("download_link_holder");
 const alignmentTypes = ["left", "center", "right", "justify"];
 
 // This looks for a change in value: no file to yes file
@@ -126,7 +127,7 @@ Shape of a danaParagraph:
     dataView.setUint8(0, 0x01); // Type indicator
     dataView.setUint16(1, textNodeLength); // Length of text node
     dataView.setUint8(3, 0x00); // fontIndex
-    dataView.setUint8(4, 0x0e); // set fontSize to 14 px
+    dataView.setUint8(4, 28); // set fontSize to 14 px
     dataView.setUint8(5, 0x00); // Idk
 
     let styleFlags = 0;
@@ -153,14 +154,17 @@ function convertHtmlToPdb() {
   console.log("What is latinFileName?", latinFileName);
   nameBuffer.set(latinFileName.slice(0, 31));
   const donorDataForDana = new Uint8Array([
-    // Offset 0x00000020 to 0x0000006F
+    // Offset 0x00000020 to 0x0000008C
     0x00, 0x08, 0x00, 0x00, 0xb6, 0x3f, 0x56, 0x44, 0xb6, 0x3f, 0x56, 0x46,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x42, 0x44, 0x4f, 0x43, 0x57, 0x72, 0x64, 0x53,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00,
     0x00, 0x60, 0x40, 0xf2, 0x10, 0x01, 0x00, 0x00, 0x00, 0x70, 0x40, 0xf2,
     0x10, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x87,
-    0x00, 0x01, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x01, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x04, 0x00, 0x00,
+    0x00, 0x03, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x2e, 0x00, 0x00,
+    0x00, 0x08, 0x80, 0x00, 0x08, 0x00, 0x00, 0x50, 0x6c, 0x61, 0x69, 0x6e,
+    0x00,
   ]);
 
   fileSoFar = mergeArrayBuffers(
@@ -170,21 +174,33 @@ function convertHtmlToPdb() {
 
   console.log("What is nameBuffer?", nameBuffer);
 
-  const fontHeader = new Uint8Array([
-    // Offset 0x00000070 to 0x0000008C
-    0x02, 0x04, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00,
-    0x00, 0x2e, 0x00, 0x00, 0x00, 0x08, 0x80, 0x00, 0x08, 0x00, 0x00, 0x50,
-    0x6c, 0x61, 0x69, 0x6e, 0x00,
-  ]);
-
   const danaParagraphs = Array.from(quill.root.childNodes).map(
     getDanaPargraphFromDomNode
   );
   console.log("What is danaParagraphs?", danaParagraphs);
-  const totalParagraphNodes = danaParagraphs.length;
-  const totalTextNodes = danaParagraphs.reduce(function (accumulator, current) {
-    return accumulator + current.children.length;
-  }, 0);
+  // Getting the total count of paragraphs in the array to fulfill the PDB paragraphCount field.
+  const paragraphCount = danaParagraphs.length;
+  // Getting the total count of the text nodes from all paragraphs to fulfill the PDB textNodeCount field.
+  const textNodeCount = danaParagraphs.reduce(function (
+    accumulator,
+    paragraph
+  ) {
+    return accumulator + paragraph.children.length;
+  },
+  0);
+  // Getting the total count of text characters from all text nodes inside all paragraphs to fulfill the PDB textNodeCharacterCount field.
+  const textNodeCharacterCount = danaParagraphs.reduce(function (
+    allParagraphsTotal,
+    paragraph
+  ) {
+    return (
+      allParagraphsTotal +
+      paragraph.children.reduce(function (paragraphTotal, textNode) {
+        return paragraphTotal + textNode.text.length;
+      }, 0)
+    );
+  },
+  0);
   const encodedDanaParagraphs = danaParagraphs.map(
     convertDanaParagraphToArrayBuffer
   );
@@ -192,14 +208,28 @@ function convertHtmlToPdb() {
     fileSoFar = mergeArrayBuffers(fileSoFar, encodedDanaParagraph.buffer);
   });
   console.log("What is encodedDanaParagraphs?", encodedDanaParagraphs);
-  console.log("What is totalTextNodes?", totalTextNodes);
+  console.log("What is totalTextNodes?", textNodeCount);
   console.log("What is fileSoFar?", fileSoFar);
-  // TODO: Write totalParagraphNodes and totalTextNodes into correct offset in fileSoFar
-  // TOOD: Create download link that lets the user get the .pdb file
 
-  alert(
-    "This feature is a work in progress! Check back in a few weeks. 2024-03-11"
-  );
+  const headerDataView = new DataView(fileSoFar.buffer);
+  // Set the count-related offsets with their proper values.
+  headerDataView.setUint32(0x72, paragraphCount);
+  headerDataView.setUint32(0x76, textNodeCount);
+  headerDataView.setUint32(0x7a, textNodeCharacterCount);
+
+  // application/octect-stream is MIME type to force a download
+  const blob = new Blob([fileSoFar.buffer], {
+    type: "application/octet-stream",
+  });
+  const link = document.createElement("a");
+  link.href = window.URL.createObjectURL(blob);
+  link.download = fileNameInput.value + ".pdb";
+  link.innerText = 'Download "' + link.download + '" now?';
+  downloadLinkHolder.innerHTML = "";
+  downloadLinkHolder.appendChild(link);
+  // TODO: Write totalParagraphNodes and totalTextNodes into correct offset in fileSoFar
+  // TODO: Create download link that lets the user get the .pdb file
+  // TODO: Replace quotes with smart quotes
 }
 
 encodeButton.addEventListener("click", convertHtmlToPdb);
