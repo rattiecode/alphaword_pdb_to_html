@@ -94,9 +94,10 @@ Seems to be Uint16 value where this number is double the font size that is speci
 
 - Find and replace
   - ' to ’
-  - ` "` and `\n"` to ` “`
+  - ` "` to ` “`
   - `" ` to `” `
+  - `\n"` to `\n“`
+  - `"\n` to `”\n`
 - Generate PDB file from HTML
   - Use a template PDB to give the generated PDB the header information it needs to be read as a PDB
 - Create a PDB download button
--

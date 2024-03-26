@@ -13,14 +13,26 @@ async function fileChangeHandler(fileChangeEvent) {
   lastArrayBuffer = arrayBuffer;
   console.log("What is arrayBuffer? ", arrayBuffer);
   // Pass into Kaitai, which parses for us
-  var parsedPDB = new AlphawordPdb(new KaitaiStream(arrayBuffer));
+  const parsedPDB = new AlphawordPdb(new KaitaiStream(arrayBuffer));
   console.log("What is parsedPDB?", parsedPDB);
 
   let currentParagraph = null;
   let paragraphs = [];
   // This uses the Kaitai structure file (styleFlags, isItalic, etc) to denote what HTML to apply
   function processTextStyle(textInnerType) {
-    let text = textInnerType.text;
+    /*
+      - ' to ’
+  - ` "` to ` “`
+  - `" ` to `” `
+  - `\n"` to `\n“`
+  - `"\n` to `”\n`
+  */
+    let text = textInnerType.text
+      .replaceAll(`'`, `’`)
+      .replaceAll(` "`, ` “`)
+      .replaceAll(/^"/gm, `“`)
+      .replaceAll(`" `, `” `)
+      .replaceAll(/"$/gm, `”`);
     if (textInnerType.styleFlags.isItalic) {
       text = `<em>${text}</em>`;
     }
@@ -118,8 +130,14 @@ Shape of a danaParagraph:
     0x00,
   ]);
   danaParagraph.children.forEach(function (node) {
+    const textWithoutSmartQuotes = node.text
+      .replaceAll(`’`, `'`)
+      .replaceAll(/[“”]/gm, `"`);
     // Returns Uint8Array
-    const latin1EncodedText = SingleByte.encode("iso-8859-2", node.text);
+    const latin1EncodedText = SingleByte.encode(
+      "iso-8859-2",
+      textWithoutSmartQuotes
+    );
     const textNodeLength = latin1EncodedText.buffer.byteLength;
     const textNodeHeader = new ArrayBuffer(7 + textNodeLength);
     const dataView = new DataView(textNodeHeader);
@@ -227,9 +245,6 @@ function convertHtmlToPdb() {
   link.innerText = 'Download "' + link.download + '" now?';
   downloadLinkHolder.innerHTML = "";
   downloadLinkHolder.appendChild(link);
-  // TODO: Write totalParagraphNodes and totalTextNodes into correct offset in fileSoFar
-  // TODO: Create download link that lets the user get the .pdb file
-  // TODO: Replace quotes with smart quotes
 }
 
 encodeButton.addEventListener("click", convertHtmlToPdb);
