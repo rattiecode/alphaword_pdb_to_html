@@ -132,13 +132,13 @@ Shape of a danaParagraph:
 
     let styleFlags = 0;
     if (node.isUnderlined) {
-      styleFlags = +0b00000100;
+      styleFlags += 0b00000100;
     }
     if (node.isItalic) {
-      styleFlags = +0b00000010;
+      styleFlags += 0b00000010;
     }
     if (node.isBold) {
-      styleFlags = +0b00000001;
+      styleFlags += 0b00000001;
     }
     dataView.setUint8(6, styleFlags); // Style flags
     new Uint8Array(textNodeHeader).set(latin1EncodedText, 7);
