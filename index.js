@@ -88,7 +88,7 @@ async function fileChangeHandler(fileChangeEvent) {
 fileInput.addEventListener("change", fileChangeHandler);
 
 const fileNameInput = document.getElementById("file_name");
-const encodeButton = document.getElementById("encode_button");
+const encodeForm = document.getElementById("encode_form");
 
 const mergeArrayBuffers = function (a, b) {
   const result = new Uint8Array(a.byteLength + b.byteLength);
@@ -242,9 +242,13 @@ function convertHtmlToPdb() {
   const link = document.createElement("a");
   link.href = window.URL.createObjectURL(blob);
   link.download = fileNameInput.value + ".pdb";
-  link.innerText = 'Download "' + link.download + '" now?';
+  link.innerText = 'Download "' + link.download + '"';
   downloadLinkHolder.innerHTML = "";
   downloadLinkHolder.appendChild(link);
 }
 
-encodeButton.addEventListener("click", convertHtmlToPdb);
+// Wait for Submit event, then prevent the default submission behavior (ie clearing the page) so that the text fields don't get erased.
+encodeForm.addEventListener("submit", function (formSubmitEvent) {
+  formSubmitEvent.preventDefault();
+  convertHtmlToPdb();
+});

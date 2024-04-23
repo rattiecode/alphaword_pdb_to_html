@@ -2,13 +2,13 @@
 
 ## [Use the tool here!](https://rattiecode.github.io/alphaword_pdb_to_html/)
 
-I have an AlphaSmart Dana, and wanted to be able to move text from the Dana to my computer for editing without losing text formatting like italization. Mostly italization.
+I have an AlphaSmart Dana, and wanted to be able to move text files between the Dana and my computer without losing text formatting like italization. Mostly italization.
 
-This program was written to parse the Dana's AlphaWord PDB files and display them in formatted HTML so that it can be copied into a dektop computer's word processor.
-
-My future goal is to convert text from a word processor _back_ to PDB format so that I can continue working on my file without losing formatting.
+This program was written to parse an AlphaWord PDB file and then display it in formatted HTML so that it can be copied into a dektop computer's word processor. It can also reverse the process, and use formatted HTML to generate a PDB file that the Dana can read.
 
 ## Notes on the PDB Format
+
+The PDB format has a file header that records various values relating to the file. When this program generates a PDB file from HTML, it fills in some of these values using values from a donor PDB file that we created.
 
 | Offset | Name                | Type                                    | Size     |
 | ------ | ------------------- | --------------------------------------- | -------- |
@@ -91,13 +91,3 @@ Seems to be Uint16 value where this number is double the font size that is speci
 - `Kaitai Struct` used to encode PDB to HTML
 
 ### Goals
-
-- Find and replace
-  - ' to ’
-  - ` "` to ` “`
-  - `" ` to `” `
-  - `\n"` to `\n“`
-  - `"\n` to `”\n`
-- Generate PDB file from HTML
-  - Use a template PDB to give the generated PDB the header information it needs to be read as a PDB
-- Create a PDB download button
