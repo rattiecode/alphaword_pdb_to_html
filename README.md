@@ -6,6 +6,8 @@ I have an AlphaSmart Dana, and wanted to be able to move text files between the 
 
 This program was written to parse an AlphaWord PDB file and then display it in formatted HTML so that it can be copied into a dektop computer's word processor. It can also reverse the process, and use formatted HTML to generate a PDB file that the Dana can read.
 
+It can retain bold, italization, and underlining. It CANNOT retain font styles and it does not account for other styling. When converting to PDB, it sets the font size to 14, which is easiest to read on the Dana.
+
 ## Notes on the PDB Format
 
 The PDB format has a file header that records various values relating to the file. When this program generates a PDB file from HTML, it fills in some of these values using values from a donor PDB file that we created.
